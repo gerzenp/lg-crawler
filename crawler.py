@@ -161,15 +161,15 @@ def scan_KatS (ls_KatS):
                     if index >= 0 and index <= 11:
                         ls_KatS_tmp [index] [0] += 1
                         if ls_KatS_tmp [index] [0] == 1:
+                            ls_KatS_tmp [index] [1] [0] = status
+                            ls_KatS_tmp [index] [2] [0] = datumStart
+                            ls_KatS_tmp [index] [3] [0] = datumEnde
+                            ls_KatS_tmp [index] [4] [0] = meldeschluss
+                        elif ls_KatS_tmp [index] [0] == 2:
                             ls_KatS_tmp [index] [1] [1] = status
                             ls_KatS_tmp [index] [2] [1] = datumStart
                             ls_KatS_tmp [index] [3] [1] = datumEnde
                             ls_KatS_tmp [index] [4] [1] = meldeschluss
-                        elif ls_KatS_tmp [index] [0] == 2:
-                            ls_KatS_tmp [index] [1] [2] = status
-                            ls_KatS_tmp [index] [2] [2] = datumStart
-                            ls_KatS_tmp [index] [3] [2] = datumEnde
-                            ls_KatS_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -221,15 +221,15 @@ def scan_KatS (ls_KatS):
                     if index >= 0 and index <= 11:
                         ls_KatS_tmp [index] [0] += 1
                         if ls_KatS_tmp [index] [0] == 1:
+                            ls_KatS_tmp [index] [1] [0] = status
+                            ls_KatS_tmp [index] [2] [0] = datumStart
+                            ls_KatS_tmp [index] [3] [0] = datumEnde
+                            ls_KatS_tmp [index] [4] [0] = meldeschluss
+                        elif ls_KatS_tmp [index] [0] == 2:
                             ls_KatS_tmp [index] [1] [1] = status
                             ls_KatS_tmp [index] [2] [1] = datumStart
                             ls_KatS_tmp [index] [3] [1] = datumEnde
                             ls_KatS_tmp [index] [4] [1] = meldeschluss
-                        elif ls_KatS_tmp [index] [0] == 2:
-                            ls_KatS_tmp [index] [1] [2] = status
-                            ls_KatS_tmp [index] [2] [2] = datumStart
-                            ls_KatS_tmp [index] [3] [2] = datumEnde
-                            ls_KatS_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -241,7 +241,7 @@ def scan_KatS (ls_KatS):
             for k in range (0, 1+1):
                 if ls_KatS_tmp [i][1][k]!= '':
                     report (8, i, ls_KatS_tmp [i][1][k], ls_KatS_tmp [index] [2] [k], ls_KatS_tmp [index] [3] [k], ls_KatS_tmp [index] [4] [k])
-                    
+                   
     return ls_KatS_tmp
 
 def scan_Boot (ls_Boot):
@@ -300,15 +300,15 @@ def scan_Boot (ls_Boot):
                     if index >= 0 and index <= 0:
                         ls_Boot_tmp [index] [0] += 1
                         if ls_Boot_tmp [index] [0] == 1:
+                            ls_Boot_tmp [index] [1] [0] = status
+                            ls_Boot_tmp [index] [2] [0] = datumStart
+                            ls_Boot_tmp [index] [3] [0] = datumEnde
+                            ls_Boot_tmp [index] [4] [0] = meldeschluss
+                        elif ls_Boot_tmp [index] [0] == 2:
                             ls_Boot_tmp [index] [1] [1] = status
                             ls_Boot_tmp [index] [2] [1] = datumStart
                             ls_Boot_tmp [index] [3] [1] = datumEnde
                             ls_Boot_tmp [index] [4] [1] = meldeschluss
-                        elif ls_Boot_tmp [index] [0] == 2:
-                            ls_Boot_tmp [index] [1] [2] = status
-                            ls_Boot_tmp [index] [2] [2] = datumStart
-                            ls_Boot_tmp [index] [3] [2] = datumEnde
-                            ls_Boot_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -360,15 +360,15 @@ def scan_Boot (ls_Boot):
                     if index >= 0 and index <= 0:
                         ls_Boot_tmp [index] [0] += 1
                         if ls_Boot_tmp [index] [0] == 1:
+                            ls_Boot_tmp [index] [1] [0] = status
+                            ls_Boot_tmp [index] [2] [0] = datumStart
+                            ls_Boot_tmp [index] [3] [0] = datumEnde
+                            ls_Boot_tmp [index] [4] [0] = meldeschluss
+                        elif ls_Boot_tmp [index] [0] == 2:
                             ls_Boot_tmp [index] [1] [1] = status
                             ls_Boot_tmp [index] [2] [1] = datumStart
                             ls_Boot_tmp [index] [3] [1] = datumEnde
                             ls_Boot_tmp [index] [4] [1] = meldeschluss
-                        elif ls_Boot_tmp [index] [0] == 2:
-                            ls_Boot_tmp [index] [1] [2] = status
-                            ls_Boot_tmp [index] [2] [2] = datumStart
-                            ls_Boot_tmp [index] [3] [2] = datumEnde
-                            ls_Boot_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -437,15 +437,15 @@ def scan_IuK (ls_IuK):
                     if index >= 0 and index <= 0:
                         ls_IuK_tmp [index] [0] += 1
                         if ls_IuK_tmp [index] [0] == 1:
+                            ls_IuK_tmp [index] [1] [0] = status
+                            ls_IuK_tmp [index] [2] [0] = datumStart
+                            ls_IuK_tmp [index] [3] [0] = datumEnde
+                            ls_IuK_tmp [index] [4] [0] = meldeschluss
+                        elif ls_IuK_tmp [index] [0] == 2:
                             ls_IuK_tmp [index] [1] [1] = status
                             ls_IuK_tmp [index] [2] [1] = datumStart
                             ls_IuK_tmp [index] [3] [1] = datumEnde
                             ls_IuK_tmp [index] [4] [1] = meldeschluss
-                        elif ls_IuK_tmp [index] [0] == 2:
-                            ls_IuK_tmp [index] [1] [2] = status
-                            ls_IuK_tmp [index] [2] [2] = datumStart
-                            ls_IuK_tmp [index] [3] [2] = datumEnde
-                            ls_IuK_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -497,15 +497,15 @@ def scan_IuK (ls_IuK):
                     if index >= 0 and index <= 0:
                         ls_IuK_tmp [index] [0] += 1
                         if ls_IuK_tmp [index] [0] == 1:
+                            ls_IuK_tmp [index] [1] [0] = status
+                            ls_IuK_tmp [index] [2] [0] = datumStart
+                            ls_IuK_tmp [index] [3] [0] = datumEnde
+                            ls_IuK_tmp [index] [4] [0] = meldeschluss
+                        elif ls_IuK_tmp [index] [0] == 2:
                             ls_IuK_tmp [index] [1] [1] = status
                             ls_IuK_tmp [index] [2] [1] = datumStart
                             ls_IuK_tmp [index] [3] [1] = datumEnde
                             ls_IuK_tmp [index] [4] [1] = meldeschluss
-                        elif ls_IuK_tmp [index] [0] == 2:
-                            ls_IuK_tmp [index] [1] [2] = status
-                            ls_IuK_tmp [index] [2] [2] = datumStart
-                            ls_IuK_tmp [index] [3] [2] = datumEnde
-                            ls_IuK_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -575,15 +575,15 @@ def scan_SR (ls_SR):
                     if index >= 0 and index <= 0:
                         ls_SR_tmp [index] [0] += 1
                         if ls_SR_tmp [index] [0] == 1:
+                            ls_SR_tmp [index] [1] [0] = status
+                            ls_SR_tmp [index] [2] [0] = datumStart
+                            ls_SR_tmp [index] [3] [0] = datumEnde
+                            ls_SR_tmp [index] [4] [0] = meldeschluss
+                        elif ls_SR_tmp [index] [0] == 2:
                             ls_SR_tmp [index] [1] [1] = status
                             ls_SR_tmp [index] [2] [1] = datumStart
                             ls_SR_tmp [index] [3] [1] = datumEnde
                             ls_SR_tmp [index] [4] [1] = meldeschluss
-                        elif ls_SR_tmp [index] [0] == 2:
-                            ls_SR_tmp [index] [1] [2] = status
-                            ls_SR_tmp [index] [2] [2] = datumStart
-                            ls_SR_tmp [index] [3] [2] = datumEnde
-                            ls_SR_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -635,15 +635,15 @@ def scan_SR (ls_SR):
                     if index >= 0 and index <= 0:
                         ls_SR_tmp [index] [0] += 1
                         if ls_SR_tmp [index] [0] == 1:
+                            ls_SR_tmp [index] [1] [0] = status
+                            ls_SR_tmp [index] [2] [0] = datumStart
+                            ls_SR_tmp [index] [3] [0] = datumEnde
+                            ls_SR_tmp [index] [4] [0] = meldeschluss
+                        elif ls_SR_tmp [index] [0] == 2:
                             ls_SR_tmp [index] [1] [1] = status
                             ls_SR_tmp [index] [2] [1] = datumStart
                             ls_SR_tmp [index] [3] [1] = datumEnde
                             ls_SR_tmp [index] [4] [1] = meldeschluss
-                        elif ls_SR_tmp [index] [0] == 2:
-                            ls_SR_tmp [index] [1] [2] = status
-                            ls_SR_tmp [index] [2] [2] = datumStart
-                            ls_SR_tmp [index] [3] [2] = datumEnde
-                            ls_SR_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -788,7 +788,10 @@ def deployMail (fbName, lgName, status, datumStart, datumEnde, meldeschluss):
     
     subject = 'Lehrgangs-Hinweis'
     header = 'To: ' + toAdd + '\n' + 'From: ' + fromAdd + '\n' + 'Subject: ' + subject
-    body = 'System mit Feststellung!\n\nKennzeichnung:\n' + lgName + '\n\nStatus:\n' + status + '\n\nZeitraum:\n' + datumStart + ' bis ' + datumEnde + '\n\nMeldeschluss:\n' + meldeschluss
+    if datumEnde == '':
+        body = 'System mit Feststellung!\n\nKennzeichnung:\n' + lgName + '\n\nStatus:\n' + status + '\n\nZeitraum:\n' + datumStart + '\n\nMeldeschluss:\n' + meldeschluss
+    else:
+        body = 'System mit Feststellung!\n\nKennzeichnung:\n' + lgName + '\n\nStatus:\n' + status + '\n\nZeitraum:\n' + datumStart + ' bis ' + datumEnde + '\n\nMeldeschluss:\n' + meldeschluss
         
     s = smtplib.SMTP('mail.gmx.net',587)
     
@@ -815,6 +818,9 @@ ls_SR = [[0, ['',''], ['',''], ['',''], ['','']]]
 #Variable für Terminal-Leerung nach x Iterationen
 count = 0
 
+tmp = sp.call('clear', shell=True)
+print('----- LV-Crawler in VERSION 4 ALPAH -----')
+
 while 1:
     ls_Boot = scan_Boot (ls_Boot)
     ls_IuK = scan_IuK (ls_IuK)
@@ -831,6 +837,6 @@ while 1:
     if count == 20-1:
         tmp = sp.call('clear', shell=True)
         count = 0
-        print('----- CLEAR -----')
+        print('----- LV-Crawler in VERSION 4 -----')
         
     count +=1
