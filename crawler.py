@@ -105,109 +105,327 @@ def check_SR (zelle):
         return '1011'
         
 def scan_KatS (ls_KatS):
-    ls_KatS_tmp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ls_KatS_tmp = [[0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', '']]
     URL_KatS = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/katastrophenschutz/'
     response_KatS = requests.get(URL_KatS)
     soup = BeautifulSoup(response_KatS.text, 'html.parser')
-
-    #ermittlen aller Spalten mit <td>XXX</td>
-    zellen_KatS = soup.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
     
-    for zelle_KatS in zellen_KatS:
-        zelle_KatS_2 = zelle_KatS.find_all(text = True)
-        for zelle in zelle_KatS_2:
-            erg = check_KatS(str(zelle))
-            if erg:
-                index = getIndex(8, erg)
-                if index >= 0 and index <= 11:
-                    ls_KatS_tmp [index] += 1   
+    zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
+    zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
+          
+    for zeile in zeile_master_even:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
-                del erg
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_KatS(str(name_3))
+                if erg:
+                    index = getIndex(8, erg)
+                    
+                    if index >= 0 and index <= 11:
+                        ls_KatS_tmp [index] [0] += 1
+                        if ls_KatS_tmp [index] [0] == 1:
+                            ls_KatS_tmp [index] [1] = status
+                        elif ls_KatS_tmp [index] [0] == 2:
+                            ls_KatS_tmp [index] [2] = status
+                    
+                    del erg
+        del status
         
-    for index in range (len(ls_KatS)):
-        if ls_KatS_tmp [index] > ls_KatS [index]:
-            report (8, index)
+    for zeile in zeile_master_odd:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_KatS(str(name_3))
+                if erg:
+                    index = getIndex(8, erg)
+                    
+                    if index >= 0 and index <= 11:
+                        ls_KatS_tmp [index] [0] += 1
+                        if ls_KatS_tmp [index] [0] == 1:
+                            ls_KatS_tmp [index] [1] = status
+                        elif ls_KatS_tmp [index] [0] == 2:
+                            ls_KatS_tmp [index] [2] = status
+                    
+                    del erg
+        del status
+                
+    for i in range (len(ls_KatS)):
+        if ls_KatS_tmp [i] [0] > ls_KatS [i] [0]:
+            for k in range (1, 2+1):
+                if ls_KatS_tmp [i][k]!= '':
+                    report (8, i, ls_KatS_tmp [i][k])
+                    
     return ls_KatS_tmp
 
 def scan_Boot (ls_Boot):
-    ls_Boot_tmp = [0]
+    ls_Boot_tmp = [[0, '', '']]
     URL_Boot = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/bootswesen/'
     response_Boot = requests.get(URL_Boot)
     soup = BeautifulSoup(response_Boot.text, 'html.parser')
 
-    #ermittlen aller Spalten mit <td>XXX</td>
-    zellen_Boot = soup.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
-    
-    for zelle_Boot in zellen_Boot:
-        zelle_Boot_2 = zelle_Boot.find_all(text=True)
-        for zelle in zelle_Boot_2:
-            erg = check_Boot(str(zelle))
-            if erg:
-                index = getIndex(5, erg)
-                if index >= 0 and index <= 0:
-                    ls_Boot_tmp [index] += 1   
+    zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
+    zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
+          
+    for zeile in zeile_master_even:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
-                del erg
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_Boot(str(name_3))
+                if erg:
+                    index = getIndex(5, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_Boot_tmp [index] [0] += 1
+                        if ls_Boot_tmp [index] [0] == 1:
+                            ls_Boot_tmp [index] [1] = status
+                        elif ls_Boot_tmp [index] [0] == 2:
+                            ls_Boot_tmp [index] [2] = status
+                    
+                    del erg
+        del status
         
-    for index in range (len(ls_Boot)):
-        if ls_Boot_tmp [index] > ls_Boot [index]:
-            report (5, index)
+    for zeile in zeile_master_odd:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_Boot(str(name_3))
+                if erg:
+                    index = getIndex(5, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_Boot_tmp [index] [0] += 1
+                        if ls_Boot_tmp [index] [0] == 1:
+                            ls_Boot_tmp [index] [1] = status
+                        elif ls_Boot_tmp [index] [0] == 2:
+                            ls_Boot_tmp [index] [2] = status
+                    
+                    del erg
+        del status
+                
+    for i in range (len(ls_Boot)):
+        if ls_Boot_tmp [i] [0] > ls_Boot [i] [0]:
+            for k in range (1, 2+1):
+                if ls_Boot_tmp [i][k]!= '':
+                    report (5, i, ls_Boot_tmp [i][k])
+                    
     return ls_Boot_tmp
 
 def scan_IuK (ls_IuK):
-    ls_IuK_tmp = [0]
+    ls_IuK_tmp = [[0, '', '']]
     URL_IuK = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/sprechfunk/iuk/'
     response_IuK = requests.get(URL_IuK)
     soup = BeautifulSoup(response_IuK.text, 'html.parser')
 
-    #ermittlen aller Spalten mit <td>XXX</td>
-    zellen_IuK = soup.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
-    
-    for zelle_IuK in zellen_IuK:
-        zelle_IuK_2 = zelle_IuK.find_all(text=True)
-        for zelle in zelle_IuK_2:
-            erg = check_IuK(str(zelle))
-            if erg:
-                index = getIndex(7, erg)
-                if index >= 0 and index <= 0:
-                    ls_IuK_tmp [index] += 1   
+    zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
+    zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
+          
+    for zeile in zeile_master_even:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
-                del erg
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_IuK(str(name_3))
+                if erg:
+                    index = getIndex(7, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_IuK_tmp [index] [0] += 1
+                        if ls_IuK_tmp [index] [0] == 1:
+                            ls_IuK_tmp [index] [1] = status
+                        elif ls_IuK_tmp [index] [0] == 2:
+                            ls_IuK_tmp [index] [2] = status
+                    
+                    del erg
+        del status
         
-    for index in range (len(ls_IuK)):
-        if ls_IuK_tmp [index] > ls_IuK [index]:
-            report (7, index)
+    for zeile in zeile_master_odd:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_IuK(str(name_3))
+                if erg:
+                    index = getIndex(7, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_IuK_tmp [index] [0] += 1
+                        if ls_IuK_tmp [index] [0] == 1:
+                            ls_IuK_tmp [index] [1] = status
+                        elif ls_IuK_tmp [index] [0] == 2:
+                            ls_IuK_tmp [index] [2] = status
+                    
+                    del erg
+        del status
+                
+    for i in range (len(ls_IuK)):
+        if ls_IuK_tmp [i] [0] > ls_IuK [i] [0]:
+            for k in range (1, 2+1):
+                if ls_IuK_tmp [i][k]!= '':
+                    report (7, i, ls_IuK_tmp [i][k])
+                    
     return ls_IuK_tmp
 
+
 def scan_SR (ls_SR):
-    ls_SR_tmp = [0]
+    ls_SR_tmp = [[0, '', '']]
     URL_SR = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/stroemungsrettung/'
     response_SR = requests.get(URL_SR)
     soup = BeautifulSoup(response_SR.text, 'html.parser')
 
-    #ermittlen aller Spalten mit <td>XXX</td>
-    zellen_SR = soup.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
-    
-    for zelle_SR in zellen_SR:
-        zelle_SR_2 = zelle_SR.find_all(text=True)
-        for zelle in zelle_SR_2:
-            erg = check_SR(str(zelle))
-            if erg:
-                index = getIndex(10, erg)
-                if index >= 0 and index <= 0:
-                    ls_SR_tmp [index] += 1   
-            
-                del erg
-        
-    for index in range (len(ls_SR)):
-        if ls_SR_tmp [index] > ls_SR [index]:
-            report (10, index)
+    zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
+    zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
+          
+    for zeile in zeile_master_even:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
                 
-    return ls_SR_tmp
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_SR(str(name_3))
+                if erg:
+                    index = getIndex(10, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_SR_tmp [index] [0] += 1
+                        if ls_SR_tmp [index] [0] == 1:
+                            ls_SR_tmp [index] [1] = status
+                        elif ls_SR_tmp [index] [0] == 2:
+                            ls_SR_tmp [index] [2] = status
+                    
+                    del erg
+        del status
         
+    for zeile in zeile_master_odd:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+                
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_SR(str(name_3))
+                if erg:
+                    index = getIndex(10, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_SR_tmp [index] [0] += 1
+                        if ls_SR_tmp [index] [0] == 1:
+                            ls_SR_tmp [index] [1] = status
+                        elif ls_SR_tmp [index] [0] == 2:
+                            ls_SR_tmp [index] [2] = status
+                    
+                    del erg
+        del status
+                
+    for i in range (len(ls_SR)):
+        if ls_SR_tmp [i] [0] > ls_SR [i] [0]:
+            for k in range (1, 2+1):
+                if ls_SR_tmp [i][k]!= '':
+                    report (10, i, ls_SR_tmp [i][k])
+                    
+    return ls_SR_tmp
+
+        
+def checkStatus(status):
+    c_ab = '\.*ABGESAGT.*'
+    c_frei = '\.*FREI.*'
+    c_wait = '\.*WARTE.*'
+        
+    if re.search(c_ab,status.upper()):
+        return 'ABGESAGT'
+    elif re.search(c_frei,status.upper()):
+        return 'FREI'
+    elif re.search(c_wait,status.upper()):
+        return 'WARTELISTE'
+
 def getIndex (fid, erg):
     #Boot
     if fid == 5:
@@ -259,53 +477,53 @@ def getIndex (fid, erg):
         else:
             return 9999
     
-def report (fid, index):
+def report (fid, index, status):
     #print als log des Report
     print ('report: ' + str(fid) + ' | ' + str(index))
     
     #Boot
     if fid == 5:
         if index == 0:
-            deployMail('Fachbereich Boot', '511 - Bootsfuehrerschein A')
+            deployMail('Fachbereich Boot', '511 - Bootsfuehrerschein A', status)
             
     #IuK
     elif fid == 7:
         if index == 0:
-            deployMail('Fachbereich IuK', '715 - BOS-Sprechfunker (DIGITAL)')
+            deployMail('Fachbereich IuK', '715 - BOS-Sprechfunker (DIGITAL)', status)
     
     #KatS
     elif fid == 8:
         if index == 0:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M4 - Grundlehrgang Technik und Sicherheit')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M4 - Grundlehrgang Technik und Sicherheit', status)
         elif index == 1:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M5 - Grundlehrgang Wasserrettung im KatS')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M5 - Grundlehrgang Wasserrettung im KatS', status)
         elif index == 2:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M6 - Grundlehrgang Hochwasser')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M6 - Grundlehrgang Hochwasser', status)
         elif index == 3:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '821 - Retten aus Hochwassergefahren')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '821 - Retten aus Hochwassergefahren', status)
         elif index == 4:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '822 - Zusatzausbildung Deichsicherung')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '822 - Zusatzausbildung Deichsicherung', status)
         elif index == 5:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M1 - Maschinist Teil 1')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M1 - Maschinist Teil 1', status)
         elif index == 6:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M2 - Maschinist Teil 2')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M2 - Maschinist Teil 2', status)
         elif index == 7:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M1 - Gruppenfuehrer Teil 1')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M1 - Gruppenfuehrer Teil 1', status)
         elif index == 8:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M2 - Gruppenfuehrer Teil 2')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M2 - Gruppenfuehrer Teil 2', status)
         elif index == 9:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M3 - Gruppenfuehrer Teil 3')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M3 - Gruppenfuehrer Teil 3', status)
         elif index == 10:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M4 - Gruppenfuehrer Teil 4')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M4 - Gruppenfuehrer Teil 4', status)
         elif index == 11:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M5 - Gruppenfuehrer Teil 5')
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M5 - Gruppenfuehrer Teil 5', status)
             
     #Strömungsrettung
     elif fid == 10:
         if index == 0:
-            deployMail('Fachbereich Strömungsrettung', '1011 - Stroemungsretter Stufe 1')
+            deployMail('Fachbereich Strömungsrettung', '1011 - Stroemungsretter Stufe 1', status)
             
-def deployMail (fbName, lgName):
+def deployMail (fbName, lgName, status):
         
     smtpUser = 'lg.info@gmx.de'
     smtpPass = 'testpw01234'
@@ -315,7 +533,10 @@ def deployMail (fbName, lgName):
     
     subject = 'Lehrgangs-Hinweis'
     header = 'To: ' + toAdd + '\n' + 'From: ' + fromAdd + '\n' + 'Subject: ' + subject
-    body = 'System mit folgender Feststellung --> ' + lgName
+    body = """System mit folgender Feststellung:
+
+    """ + lgName + """
+    """ + status
     
     #print (header + '\n' + 'TEST')
     
@@ -333,13 +554,13 @@ def deployMail (fbName, lgName):
 #------------------------------------------------------------------------------------------
 
 #ls_KatS = [812M4, 812M5, 812M6, 821, 822, 823M1, 823M2, 831M1, 831M2, 831M3, 831M4, 831M5]
-ls_KatS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+ls_KatS = [[0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', '']]
 #ls_Boot = [511]
-ls_Boot = [0]
+ls_Boot = [[0, '', '']]
 #ls_IuK = [715]
-ls_IuK = [0]
+ls_IuK = [[0, '', '']]
 #ls_SR = [1011]
-ls_SR = [0]
+ls_SR = [[0, '', '']]
 #Variable für Terminal-Leerung nach x Iterationen
 count = 0
 
