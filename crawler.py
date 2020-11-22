@@ -105,7 +105,7 @@ def check_SR (zelle):
         return '1011'
         
 def scan_KatS (ls_KatS):
-    ls_KatS_tmp = [[0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', '']]
+    ls_KatS_tmp = [[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']],[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']]]
     URL_KatS = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/katastrophenschutz/'
     response_KatS = requests.get(URL_KatS)
     soup = BeautifulSoup(response_KatS.text, 'html.parser')
@@ -116,6 +116,13 @@ def scan_KatS (ls_KatS):
     for zeile in zeile_master_even:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
+        
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -124,6 +131,24 @@ def scan_KatS (ls_KatS):
             if status_2 is not None:
                 status = checkStatus(str(status_2))
                 
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
+            
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
             name_2 = name_1.find_all(text = True)
@@ -136,9 +161,15 @@ def scan_KatS (ls_KatS):
                     if index >= 0 and index <= 11:
                         ls_KatS_tmp [index] [0] += 1
                         if ls_KatS_tmp [index] [0] == 1:
-                            ls_KatS_tmp [index] [1] = status
+                            ls_KatS_tmp [index] [1] [1] = status
+                            ls_KatS_tmp [index] [2] [1] = datumStart
+                            ls_KatS_tmp [index] [3] [1] = datumEnde
+                            ls_KatS_tmp [index] [4] [1] = meldeschluss
                         elif ls_KatS_tmp [index] [0] == 2:
-                            ls_KatS_tmp [index] [2] = status
+                            ls_KatS_tmp [index] [1] [2] = status
+                            ls_KatS_tmp [index] [2] [2] = datumStart
+                            ls_KatS_tmp [index] [3] [2] = datumEnde
+                            ls_KatS_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -146,6 +177,12 @@ def scan_KatS (ls_KatS):
     for zeile in zeile_master_odd:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -153,6 +190,24 @@ def scan_KatS (ls_KatS):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -166,23 +221,31 @@ def scan_KatS (ls_KatS):
                     if index >= 0 and index <= 11:
                         ls_KatS_tmp [index] [0] += 1
                         if ls_KatS_tmp [index] [0] == 1:
-                            ls_KatS_tmp [index] [1] = status
+                            ls_KatS_tmp [index] [1] [1] = status
+                            ls_KatS_tmp [index] [2] [1] = datumStart
+                            ls_KatS_tmp [index] [3] [1] = datumEnde
+                            ls_KatS_tmp [index] [4] [1] = meldeschluss
                         elif ls_KatS_tmp [index] [0] == 2:
-                            ls_KatS_tmp [index] [2] = status
+                            ls_KatS_tmp [index] [1] [2] = status
+                            ls_KatS_tmp [index] [2] [2] = datumStart
+                            ls_KatS_tmp [index] [3] [2] = datumEnde
+                            ls_KatS_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
-                
+    
+    #fid, index, status, datumStart, datumEnde, meldeschluss
+    
     for i in range (len(ls_KatS)):
         if ls_KatS_tmp [i] [0] > ls_KatS [i] [0]:
-            for k in range (1, 2+1):
-                if ls_KatS_tmp [i][k]!= '':
-                    report (8, i, ls_KatS_tmp [i][k])
+            for k in range (0, 1+1):
+                if ls_KatS_tmp [i][1][k]!= '':
+                    report (8, i, ls_KatS_tmp [i][1][k], ls_KatS_tmp [index] [2] [k], ls_KatS_tmp [index] [3] [k], ls_KatS_tmp [index] [4] [k])
                     
     return ls_KatS_tmp
 
 def scan_Boot (ls_Boot):
-    ls_Boot_tmp = [[0, '', '']]
+    ls_Boot_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_Boot = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/bootswesen/'
     response_Boot = requests.get(URL_Boot)
     soup = BeautifulSoup(response_Boot.text, 'html.parser')
@@ -193,6 +256,12 @@ def scan_Boot (ls_Boot):
     for zeile in zeile_master_even:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -200,6 +269,24 @@ def scan_Boot (ls_Boot):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -213,9 +300,15 @@ def scan_Boot (ls_Boot):
                     if index >= 0 and index <= 0:
                         ls_Boot_tmp [index] [0] += 1
                         if ls_Boot_tmp [index] [0] == 1:
-                            ls_Boot_tmp [index] [1] = status
+                            ls_Boot_tmp [index] [1] [1] = status
+                            ls_Boot_tmp [index] [2] [1] = datumStart
+                            ls_Boot_tmp [index] [3] [1] = datumEnde
+                            ls_Boot_tmp [index] [4] [1] = meldeschluss
                         elif ls_Boot_tmp [index] [0] == 2:
-                            ls_Boot_tmp [index] [2] = status
+                            ls_Boot_tmp [index] [1] [2] = status
+                            ls_Boot_tmp [index] [2] [2] = datumStart
+                            ls_Boot_tmp [index] [3] [2] = datumEnde
+                            ls_Boot_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -223,6 +316,12 @@ def scan_Boot (ls_Boot):
     for zeile in zeile_master_odd:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -230,6 +329,24 @@ def scan_Boot (ls_Boot):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -243,23 +360,29 @@ def scan_Boot (ls_Boot):
                     if index >= 0 and index <= 0:
                         ls_Boot_tmp [index] [0] += 1
                         if ls_Boot_tmp [index] [0] == 1:
-                            ls_Boot_tmp [index] [1] = status
+                            ls_Boot_tmp [index] [1] [1] = status
+                            ls_Boot_tmp [index] [2] [1] = datumStart
+                            ls_Boot_tmp [index] [3] [1] = datumEnde
+                            ls_Boot_tmp [index] [4] [1] = meldeschluss
                         elif ls_Boot_tmp [index] [0] == 2:
-                            ls_Boot_tmp [index] [2] = status
+                            ls_Boot_tmp [index] [1] [2] = status
+                            ls_Boot_tmp [index] [2] [2] = datumStart
+                            ls_Boot_tmp [index] [3] [2] = datumEnde
+                            ls_Boot_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
                 
     for i in range (len(ls_Boot)):
         if ls_Boot_tmp [i] [0] > ls_Boot [i] [0]:
-            for k in range (1, 2+1):
-                if ls_Boot_tmp [i][k]!= '':
-                    report (5, i, ls_Boot_tmp [i][k])
+            for k in range (0, 1+1):
+                if ls_Boot_tmp [i][1][k]!= '':
+                    report (5, i, ls_Boot_tmp [i][1][k], ls_Boot_tmp [index] [2] [k], ls_Boot_tmp [index] [3] [k], ls_Boot_tmp [index] [4] [k])
                     
     return ls_Boot_tmp
 
 def scan_IuK (ls_IuK):
-    ls_IuK_tmp = [[0, '', '']]
+    ls_IuK_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_IuK = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/sprechfunk/iuk/'
     response_IuK = requests.get(URL_IuK)
     soup = BeautifulSoup(response_IuK.text, 'html.parser')
@@ -270,6 +393,12 @@ def scan_IuK (ls_IuK):
     for zeile in zeile_master_even:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -277,6 +406,24 @@ def scan_IuK (ls_IuK):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -290,9 +437,15 @@ def scan_IuK (ls_IuK):
                     if index >= 0 and index <= 0:
                         ls_IuK_tmp [index] [0] += 1
                         if ls_IuK_tmp [index] [0] == 1:
-                            ls_IuK_tmp [index] [1] = status
+                            ls_IuK_tmp [index] [1] [1] = status
+                            ls_IuK_tmp [index] [2] [1] = datumStart
+                            ls_IuK_tmp [index] [3] [1] = datumEnde
+                            ls_IuK_tmp [index] [4] [1] = meldeschluss
                         elif ls_IuK_tmp [index] [0] == 2:
-                            ls_IuK_tmp [index] [2] = status
+                            ls_IuK_tmp [index] [1] [2] = status
+                            ls_IuK_tmp [index] [2] [2] = datumStart
+                            ls_IuK_tmp [index] [3] [2] = datumEnde
+                            ls_IuK_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -300,6 +453,12 @@ def scan_IuK (ls_IuK):
     for zeile in zeile_master_odd:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -307,6 +466,24 @@ def scan_IuK (ls_IuK):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -320,24 +497,30 @@ def scan_IuK (ls_IuK):
                     if index >= 0 and index <= 0:
                         ls_IuK_tmp [index] [0] += 1
                         if ls_IuK_tmp [index] [0] == 1:
-                            ls_IuK_tmp [index] [1] = status
+                            ls_IuK_tmp [index] [1] [1] = status
+                            ls_IuK_tmp [index] [2] [1] = datumStart
+                            ls_IuK_tmp [index] [3] [1] = datumEnde
+                            ls_IuK_tmp [index] [4] [1] = meldeschluss
                         elif ls_IuK_tmp [index] [0] == 2:
-                            ls_IuK_tmp [index] [2] = status
+                            ls_IuK_tmp [index] [1] [2] = status
+                            ls_IuK_tmp [index] [2] [2] = datumStart
+                            ls_IuK_tmp [index] [3] [2] = datumEnde
+                            ls_IuK_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
                 
     for i in range (len(ls_IuK)):
         if ls_IuK_tmp [i] [0] > ls_IuK [i] [0]:
-            for k in range (1, 2+1):
-                if ls_IuK_tmp [i][k]!= '':
-                    report (7, i, ls_IuK_tmp [i][k])
+            for k in range (0, 1+1):
+                if ls_IuK_tmp [i][1][k]!= '':
+                    report (7, i, ls_IuK_tmp [i][1][k], ls_IuK_tmp [index] [2] [k], ls_IuK_tmp [index] [3] [k], ls_IuK_tmp [index] [4] [k])
                     
     return ls_IuK_tmp
 
 
 def scan_SR (ls_SR):
-    ls_SR_tmp = [[0, '', '']]
+    ls_SR_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_SR = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/stroemungsrettung/'
     response_SR = requests.get(URL_SR)
     soup = BeautifulSoup(response_SR.text, 'html.parser')
@@ -348,6 +531,12 @@ def scan_SR (ls_SR):
     for zeile in zeile_master_even:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -355,6 +544,24 @@ def scan_SR (ls_SR):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -368,9 +575,15 @@ def scan_SR (ls_SR):
                     if index >= 0 and index <= 0:
                         ls_SR_tmp [index] [0] += 1
                         if ls_SR_tmp [index] [0] == 1:
-                            ls_SR_tmp [index] [1] = status
+                            ls_SR_tmp [index] [1] [1] = status
+                            ls_SR_tmp [index] [2] [1] = datumStart
+                            ls_SR_tmp [index] [3] [1] = datumEnde
+                            ls_SR_tmp [index] [4] [1] = meldeschluss
                         elif ls_SR_tmp [index] [0] == 2:
-                            ls_SR_tmp [index] [2] = status
+                            ls_SR_tmp [index] [1] [2] = status
+                            ls_SR_tmp [index] [2] [2] = datumStart
+                            ls_SR_tmp [index] [3] [2] = datumEnde
+                            ls_SR_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
@@ -378,6 +591,12 @@ def scan_SR (ls_SR):
     for zeile in zeile_master_odd:
         name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
         status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
                 
         #Ermitteln Status des Lehrgangs
         for status_1 in status_master:
@@ -385,6 +604,24 @@ def scan_SR (ls_SR):
             
             if status_2 is not None:
                 status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
                 
         #Ermittlen des angegebenen Lehrganges
         for name_1 in name_master:
@@ -398,18 +635,24 @@ def scan_SR (ls_SR):
                     if index >= 0 and index <= 0:
                         ls_SR_tmp [index] [0] += 1
                         if ls_SR_tmp [index] [0] == 1:
-                            ls_SR_tmp [index] [1] = status
+                            ls_SR_tmp [index] [1] [1] = status
+                            ls_SR_tmp [index] [2] [1] = datumStart
+                            ls_SR_tmp [index] [3] [1] = datumEnde
+                            ls_SR_tmp [index] [4] [1] = meldeschluss
                         elif ls_SR_tmp [index] [0] == 2:
-                            ls_SR_tmp [index] [2] = status
+                            ls_SR_tmp [index] [1] [2] = status
+                            ls_SR_tmp [index] [2] [2] = datumStart
+                            ls_SR_tmp [index] [3] [2] = datumEnde
+                            ls_SR_tmp [index] [4] [2] = meldeschluss
                     
                     del erg
         del status
                 
     for i in range (len(ls_SR)):
         if ls_SR_tmp [i] [0] > ls_SR [i] [0]:
-            for k in range (1, 2+1):
-                if ls_SR_tmp [i][k]!= '':
-                    report (10, i, ls_SR_tmp [i][k])
+            for k in range (0, 1+1):
+                if ls_SR_tmp [i][1][k]!= '':
+                    report (10, i, ls_SR_tmp [i][1][k], ls_SR_tmp [index] [2] [k], ls_SR_tmp [index] [3] [k], ls_SR_tmp [index] [4] [k])
                     
     return ls_SR_tmp
 
@@ -425,6 +668,8 @@ def checkStatus(status):
         return 'FREI'
     elif re.search(c_wait,status.upper()):
         return 'WARTELISTE'
+    else:
+        return 'UNBEKANNT'
 
 def getIndex (fid, erg):
     #Boot
@@ -476,54 +721,64 @@ def getIndex (fid, erg):
             return 0
         else:
             return 9999
+        
+def extractDate(objekt):
+    datum = ''
+    maskeDatum = '\d{2}\.\d{2}\.\d{4}'
+    if re.search('\d{2}\.\d{2}\.\d{4}', objekt):
+        datum = re.search('\d{2}\.\d{2}\.\d{4}', objekt).group(0)
+    if datum:
+        return datum
+    else:
+        return ''
     
-def report (fid, index, status):
+def report (fid, index, status, datumStart, datumEnde, meldeschluss):
     #print als log des Report
     print ('report: ' + str(fid) + ' | ' + str(index))
     
     #Boot
     if fid == 5:
         if index == 0:
-            deployMail('Fachbereich Boot', '511 - Bootsfuehrerschein A', status)
+            deployMail('Fachbereich Boot', '511 - Bootsfuehrerschein A', status, datumStart, datumEnde, meldeschluss)
             
     #IuK
     elif fid == 7:
         if index == 0:
-            deployMail('Fachbereich IuK', '715 - BOS-Sprechfunker (DIGITAL)', status)
+            deployMail('Fachbereich IuK', '715 - BOS-Sprechfunker (DIGITAL)', status, datumStart, datumEnde, meldeschluss)
     
     #KatS
     elif fid == 8:
         if index == 0:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M4 - Grundlehrgang Technik und Sicherheit', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M4 - Grundlehrgang Technik und Sicherheit', status, datumStart, datumEnde, meldeschluss)
         elif index == 1:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M5 - Grundlehrgang Wasserrettung im KatS', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M5 - Grundlehrgang Wasserrettung im KatS', status, datumStart, datumEnde, meldeschluss)
         elif index == 2:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M6 - Grundlehrgang Hochwasser', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '812M6 - Grundlehrgang Hochwasser', status, datumStart, datumEnde, meldeschluss)
         elif index == 3:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '821 - Retten aus Hochwassergefahren', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '821 - Retten aus Hochwassergefahren', status, datumStart, datumEnde, meldeschluss)
         elif index == 4:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '822 - Zusatzausbildung Deichsicherung', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '822 - Zusatzausbildung Deichsicherung', status, datumStart, datumEnde, meldeschluss)
         elif index == 5:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M1 - Maschinist Teil 1', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M1 - Maschinist Teil 1', status, datumStart, datumEnde, meldeschluss)
         elif index == 6:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M2 - Maschinist Teil 2', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '823M2 - Maschinist Teil 2', status, datumStart, datumEnde, meldeschluss)
         elif index == 7:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M1 - Gruppenfuehrer Teil 1', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M1 - Gruppenfuehrer Teil 1', status, datumStart, datumEnde, meldeschluss)
         elif index == 8:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M2 - Gruppenfuehrer Teil 2', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M2 - Gruppenfuehrer Teil 2', status, datumStart, datumEnde, meldeschluss)
         elif index == 9:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M3 - Gruppenfuehrer Teil 3', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M3 - Gruppenfuehrer Teil 3', status, datumStart, datumEnde, meldeschluss)
         elif index == 10:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M4 - Gruppenfuehrer Teil 4', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M4 - Gruppenfuehrer Teil 4', status, datumStart, datumEnde, meldeschluss)
         elif index == 11:
-            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M5 - Gruppenfuehrer Teil 5', status)
+            deployMail('Katastrophenschutz / Oeffentliche Gefahrenabwehr', '831M5 - Gruppenfuehrer Teil 5', status, datumStart, datumEnde, meldeschluss)
             
     #Strömungsrettung
     elif fid == 10:
         if index == 0:
-            deployMail('Fachbereich Strömungsrettung', '1011 - Stroemungsretter Stufe 1', status)
+            deployMail('Fachbereich Strömungsrettung', '1011 - Stroemungsretter Stufe 1', status, datumStart, datumEnde, meldeschluss)
             
-def deployMail (fbName, lgName, status):
+def deployMail (fbName, lgName, status, datumStart, datumEnde, meldeschluss):
         
     smtpUser = 'lg.info@gmx.de'
     smtpPass = 'testpw01234'
@@ -533,13 +788,8 @@ def deployMail (fbName, lgName, status):
     
     subject = 'Lehrgangs-Hinweis'
     header = 'To: ' + toAdd + '\n' + 'From: ' + fromAdd + '\n' + 'Subject: ' + subject
-    body = """System mit folgender Feststellung:
-
-    """ + lgName + """
-    """ + status
-    
-    #print (header + '\n' + 'TEST')
-    
+    body = 'System mit Feststellung!\n\nKennzeichnung:\n' + lgName + '\n\nStatus:\n' + status + '\n\nZeitraum:\n' + datumStart + ' bis ' + datumEnde + '\n\nMeldeschluss:\n' + meldeschluss
+        
     s = smtplib.SMTP('mail.gmx.net',587)
     
     s.ehlo()
@@ -552,15 +802,16 @@ def deployMail (fbName, lgName, status):
     s.quit()
 
 #------------------------------------------------------------------------------------------
+#[[Anzahl gefundener Lehrgänge], [Status-LG-1, Status-LG-2], [start-1, start-2], [ende-1, ende-2], [meldeschluss-1, meldeschluss-2]], [...]
 
 #ls_KatS = [812M4, 812M5, 812M6, 821, 822, 823M1, 823M2, 831M1, 831M2, 831M3, 831M4, 831M5]
-ls_KatS = [[0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', ''], [0, '', '']]
+ls_KatS = [[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']],[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']]]
 #ls_Boot = [511]
-ls_Boot = [[0, '', '']]
+ls_Boot = [[0, ['',''], ['',''], ['',''], ['','']]]
 #ls_IuK = [715]
-ls_IuK = [[0, '', '']]
+ls_IuK = [[0, ['',''], ['',''], ['',''], ['','']]]
 #ls_SR = [1011]
-ls_SR = [[0, '', '']]
+ls_SR = [[0, ['',''], ['',''], ['',''], ['','']]]
 #Variable für Terminal-Leerung nach x Iterationen
 count = 0
 
