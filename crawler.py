@@ -107,9 +107,17 @@ def check_SR (zelle):
 def scan_KatS (ls_KatS):
     ls_KatS_tmp = [[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']],[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']]]
     URL_KatS = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/katastrophenschutz/'
-    response_KatS = requests.get(URL_KatS)
-    soup = BeautifulSoup(response_KatS.text, 'html.parser')
     
+    #error-management
+    try:
+        response_KatS = requests.get(URL_KatS)
+        soup = BeautifulSoup(response_KatS.text, 'html.parser')
+    except:
+        print("Website not available")
+        print("retry in 30 Minutes")
+        response_KatS = requests.get(URL_KatS)
+        soup = BeautifulSoup(response_KatS.text, 'html.parser')
+        
     zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
     zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
           
@@ -247,8 +255,16 @@ def scan_KatS (ls_KatS):
 def scan_Boot (ls_Boot):
     ls_Boot_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_Boot = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/bootswesen/'
-    response_Boot = requests.get(URL_Boot)
-    soup = BeautifulSoup(response_Boot.text, 'html.parser')
+    
+    #error-management
+    try:
+        response_Boot = requests.get(URL_Boot)
+        soup = BeautifulSoup(response_Boot.text, 'html.parser')
+    except:
+        print("Website not available")
+        print("retry in 30 Minutes")
+        response_Boot = requests.get(URL_Boot)
+        soup = BeautifulSoup(response_Boot.text, 'html.parser')
 
     zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
     zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
@@ -384,8 +400,16 @@ def scan_Boot (ls_Boot):
 def scan_IuK (ls_IuK):
     ls_IuK_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_IuK = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/sprechfunk/iuk/'
-    response_IuK = requests.get(URL_IuK)
-    soup = BeautifulSoup(response_IuK.text, 'html.parser')
+    
+    #error-management
+    try:
+        response_IuK = requests.get(URL_IuK)
+        soup = BeautifulSoup(response_IuK.text, 'html.parser')
+    except:
+        print("Website not available")
+        print("retry in 30 Minutes")
+        response_IuK = requests.get(URL_IuK)
+        soup = BeautifulSoup(response_IuK.text, 'html.parser')
 
     zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
     zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
@@ -522,8 +546,16 @@ def scan_IuK (ls_IuK):
 def scan_SR (ls_SR):
     ls_SR_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
     URL_SR = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/stroemungsrettung/'
-    response_SR = requests.get(URL_SR)
-    soup = BeautifulSoup(response_SR.text, 'html.parser')
+    
+    #error-management
+    try:
+        response_SR = requests.get(URL_SR)
+        soup = BeautifulSoup(response_SR.text, 'html.parser')
+    except:
+        print("Website not available")
+        print("retry in 30 Minutes")
+        response_SR = requests.get(URL_SR)
+        soup = BeautifulSoup(response_SR.text, 'html.parser')
 
     zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
     zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
