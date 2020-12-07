@@ -115,6 +115,8 @@ def scan_KatS (ls_KatS):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
+        time.sleep(18000)
+        print("retrying ...")
         response_KatS = requests.get(URL_KatS)
         soup = BeautifulSoup(response_KatS.text, 'html.parser')
         
@@ -263,6 +265,8 @@ def scan_Boot (ls_Boot):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
+        time.sleep(18000)
+        print("retrying ...")
         response_Boot = requests.get(URL_Boot)
         soup = BeautifulSoup(response_Boot.text, 'html.parser')
 
@@ -408,6 +412,8 @@ def scan_IuK (ls_IuK):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
+        time.sleep(18000)
+        print("retrying ...")
         response_IuK = requests.get(URL_IuK)
         soup = BeautifulSoup(response_IuK.text, 'html.parser')
 
@@ -554,6 +560,8 @@ def scan_SR (ls_SR):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
+        time.sleep(18000)
+        print("retrying ...")
         response_SR = requests.get(URL_SR)
         soup = BeautifulSoup(response_SR.text, 'html.parser')
 
@@ -812,11 +820,11 @@ def report (fid, index, status, datumStart, datumEnde, meldeschluss):
             
 def deployMail (fbName, lgName, status, datumStart, datumEnde, meldeschluss):
         
-    smtpUser = 'lg.info@gmx.de'
-    smtpPass = 'testpw01234'
+    smtpUser = 'lg.info@gmx.net'
+    smtpPass = '60636a37777e9a6d76f41b6e55df69c4'
     
     toAdd = 'p-gerzen@t-online.de'
-    fromAdd = 'lg.info@gmx.de'
+    fromAdd = 'lg.info@gmx.net'
     
     subject = 'Lehrgangs-Hinweis'
     header = 'To: ' + toAdd + '\n' + 'From: ' + fromAdd + '\n' + 'Subject: ' + subject
@@ -832,7 +840,9 @@ def deployMail (fbName, lgName, status, datumStart, datumEnde, meldeschluss):
     s.ehlo()
     
     s.login(smtpUser,smtpPass)
-    s.sendmail(fromAdd, toAdd, header + '\n\n' + body)
+    main = header + '\n\n' + body
+    print(str(main))
+    s.sendmail(fromAdd, toAdd, main)
     
     s.quit()
 
