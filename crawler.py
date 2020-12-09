@@ -115,7 +115,7 @@ def scan_KatS (ls_KatS):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
-        time.sleep(18000)
+        time.sleep(1800)
         print("retrying ...")
         response_KatS = requests.get(URL_KatS)
         soup = BeautifulSoup(response_KatS.text, 'html.parser')
@@ -265,7 +265,7 @@ def scan_Boot (ls_Boot):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
-        time.sleep(18000)
+        time.sleep(1800)
         print("retrying ...")
         response_Boot = requests.get(URL_Boot)
         soup = BeautifulSoup(response_Boot.text, 'html.parser')
@@ -412,7 +412,7 @@ def scan_IuK (ls_IuK):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
-        time.sleep(18000)
+        time.sleep(1800)
         print("retrying ...")
         response_IuK = requests.get(URL_IuK)
         soup = BeautifulSoup(response_IuK.text, 'html.parser')
@@ -560,7 +560,7 @@ def scan_SR (ls_SR):
     except:
         print("Website not available")
         print("retry in 30 Minutes")
-        time.sleep(18000)
+        time.sleep(1800)
         print("retrying ...")
         response_SR = requests.get(URL_SR)
         soup = BeautifulSoup(response_SR.text, 'html.parser')
