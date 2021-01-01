@@ -847,7 +847,7 @@ def scan_WRD (ls_SR):
         if ls_WRD_tmp [i] [0] > ls_WRD [i] [0]:
             for k in range (0, 1+1):
                 if ls_WRD_tmp [i][1][k]!= '':
-                    report (4, i, ls_WRD_tmp [i][1][k], ls_WRD_tmp [index] [2] [k], ls_WRD_tmp [index] [3] [k], ls_WRD_tmp [index] [4] [k])
+                    report (10, i, ls_WRD_tmp [i][1][k], ls_WRD_tmp [index] [2] [k], ls_WRD_tmp [index] [3] [k], ls_WRD_tmp [index] [4] [k])
                     
     return ls_WRD_tmp
         
@@ -938,11 +938,6 @@ def report (fid, index, status, datumStart, datumEnde, meldeschluss):
     #print als log des Report
     print ('report: ' + str(fid) + ' | ' + str(index))
     
-    #WRD
-    if fid == 4:
-        if index == 0:
-            deployMail('Fachbereich Boot', '421 - Führungslehre', status, datumStart, datumEnde, meldeschluss)
-
     #Boot
     if fid == 5:
         if index == 0:
@@ -1033,7 +1028,6 @@ tmp = sp.call('clear', shell=True)
 print('----- LV-Crawler in VERSION 4 ALPAH -----')
 
 while 1:
-    ls_WRD = scan_WRD(ls_WRD)
     ls_Boot = scan_Boot (ls_Boot)
     ls_IuK = scan_IuK (ls_IuK)
     ls_KatS = scan_KatS (ls_KatS)
