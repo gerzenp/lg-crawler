@@ -106,10 +106,10 @@ def check_SR (zelle):
 
 def check_WRD (zelle):       
     #421 - Führungslehre
-    SR1_1 = '\.*(F|f)(ü|ue)hrungslehre.*'
-    SR1_2 = '\.*421.*'
-    SR1_3 = '.*(F|f)(ü|ue)rung.*'
-    if re.search(SR1_1,zelle) or re.search(SR1_2,zelle) or re.search(SR1_3,zelle):
+    FH_1 = '\.*(F|f)(ü|ue)hrungslehre.*'
+    FH_2 = '\.*421.*'
+    FH_3 = '.*(F|f)(ü|ue)rung.*'
+    if re.search(FH_1,zelle) or re.search(FH_2,zelle) or re.search(FH_3,zelle):
         return '421'
         
 def scan_KatS (ls_KatS):
