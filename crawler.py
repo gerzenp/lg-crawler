@@ -103,6 +103,14 @@ def check_SR (zelle):
     SR1_3 = '.*(S|s)\s?(R|r)\s?1.*'
     if re.search(SR1_1,zelle) or re.search(SR1_2,zelle) or re.search(SR1_3,zelle):
         return '1011'
+
+def check_WRD (zelle):       
+    #421 - Führungslehre
+    SR1_1 = '\.*(F|f)(ü|ue)hrungslehre.*'
+    SR1_2 = '\.*421.*'
+    SR1_3 = '.*(F|f)(ü|ue)rung.*'
+    if re.search(SR1_1,zelle) or re.search(SR1_2,zelle) or re.search(SR1_3,zelle):
+        return '421'
         
 def scan_KatS (ls_KatS):
     ls_KatS_tmp = [[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']],[0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']], [0, ['',''], ['',''], ['',''], ['','']]]
@@ -696,6 +704,152 @@ def scan_SR (ls_SR):
                     
     return ls_SR_tmp
 
+def scan_WRD (ls_SR):
+    ls_WRD_tmp = [[0, ['',''], ['',''], ['',''], ['','']]]
+    URL_WRD = 'https://hessen.dlrg.de/fuer-mitglieder/lehrgaenge/lehrgaenge-im-lv-hessen/wasserrettungsdienst/'
+    
+    #error-management
+    try:
+        response_WRD = requests.get(URL_WRD)
+        soup = BeautifulSoup(response_WRD.text, 'html.parser')
+    except:
+        print("Website not available")
+        print("retry in 30 Minutes")
+        time.sleep(1800)
+        print("retrying ...")
+        response_WRD = requests.get(URL_WRD)
+        soup = BeautifulSoup(response_WRD.text, 'html.parser')
+
+    zeile_master_even = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl even bg_lightgrey'})
+    zeile_master_odd = soup.find_all('div', {'class': 'row row-striped row-hover screen-xl odd bg_lightgrey'})
+          
+    for zeile in zeile_master_even:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
+                
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_WRD(str(name_3))
+                if erg:
+                    index = getIndex(4, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_WRD_tmp [index] [0] += 1
+                        if ls_WRD_tmp [index] [0] == 1:
+                            ls_WRD_tmp [index] [1] [0] = status
+                            ls_WRD_tmp [index] [2] [0] = datumStart
+                            ls_WRD_tmp [index] [3] [0] = datumEnde
+                            ls_WRD_tmp [index] [4] [0] = meldeschluss
+                        elif ls_WRD_tmp [index] [0] == 2:
+                            ls_WRD_tmp [index] [1] [1] = status
+                            ls_WRD_tmp [index] [2] [1] = datumStart
+                            ls_WRD_tmp [index] [3] [1] = datumEnde
+                            ls_WRD_tmp [index] [4] [1] = meldeschluss
+                    
+                    del erg
+        del status
+        
+    for zeile in zeile_master_odd:
+        name_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-3'})
+        status_master = zeile.find_all('div', {'class': 'col-sm-6 col-md-4 col-xl-2'})
+        datum_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-datum mb-2'})
+        meldeschluss_master = zeile.find_all('div', {'class': 'col-sm-12 col-md-6 col-xl seminar-meldeschluss'})
+        
+        datumStart = ''
+        datumEnde = ''
+        meldeschluss = ''
+                
+        #Ermitteln Status des Lehrgangs
+        for status_1 in status_master:
+            status_2 = status_1.select_one('span')
+            
+            if status_2 is not None:
+                status = checkStatus(str(status_2))
+                
+        #Ermitteln von Beginn und Ende
+        for datum_1 in datum_master:
+            datum_2 = datum_1.find_all('span')     
+            laenge = len(datum_2)-1            
+            if laenge == 0:
+                datumStart = extractDate(str(datum_2[0]))
+            elif laenge == 1:
+                datumStart = extractDate(str(datum_2[0]))
+                datumEnde = extractDate(str(datum_2[1]))
+                
+        #Ermitteln von Meldeschluss
+        for melde_1 in meldeschluss_master:
+            melde_2 = melde_1.find_all(text = True)
+            i = 0        
+            while meldeschluss == '' and i <= len(melde_2):
+                meldeschluss = extractDate(str(melde_2[i]))
+                i += 1
+                
+        #Ermittlen des angegebenen Lehrganges
+        for name_1 in name_master:
+            name_2 = name_1.find_all(text = True)
+            
+            for name_3 in name_2:
+                erg = check_WRD(str(name_3))
+                if erg:
+                    index = getIndex(4, erg)
+                    
+                    if index >= 0 and index <= 0:
+                        ls_WRD_tmp [index] [0] += 1
+                        if ls_WRD_tmp [index] [0] == 1:
+                            ls_WRD_tmp [index] [1] [0] = status
+                            ls_WRD_tmp [index] [2] [0] = datumStart
+                            ls_WRD_tmp [index] [3] [0] = datumEnde
+                            ls_WRD_tmp [index] [4] [0] = meldeschluss
+                        elif ls_WRD_tmp [index] [0] == 2:
+                            ls_WRD_tmp [index] [1] [1] = status
+                            ls_WRD_tmp [index] [2] [1] = datumStart
+                            ls_WRD_tmp [index] [3] [1] = datumEnde
+                            ls_WRD_tmp [index] [4] [1] = meldeschluss
+                    
+                    del erg
+        del status
+                
+    for i in range (len(ls_WRD)):
+        if ls_WRD_tmp [i] [0] > ls_WRD [i] [0]:
+            for k in range (0, 1+1):
+                if ls_WRD_tmp [i][1][k]!= '':
+                    report (10, i, ls_WRD_tmp [i][1][k], ls_WRD_tmp [index] [2] [k], ls_WRD_tmp [index] [3] [k], ls_WRD_tmp [index] [4] [k])
+                    
+    return ls_WRD_tmp
         
 def checkStatus(status):
     c_ab = '\.*ABGESAGT.*'
@@ -712,6 +866,14 @@ def checkStatus(status):
         return 'UNBEKANNT'
 
 def getIndex (fid, erg):
+    
+    #WRD
+    if fid == 4:
+        if erg == '421':
+            return 0
+        else:
+            return 9999
+
     #Boot
     if fid == 5:
         if erg == '511':
@@ -857,6 +1019,8 @@ ls_Boot = [[0, ['',''], ['',''], ['',''], ['','']]]
 ls_IuK = [[0, ['',''], ['',''], ['',''], ['','']]]
 #ls_SR = [1011]
 ls_SR = [[0, ['',''], ['',''], ['',''], ['','']]]
+#ls_WRD = [421]
+ls_WRD = [[0, ['',''], ['',''], ['',''], ['','']]]
 #Variable für Terminal-Leerung nach x Iterationen
 count = 0
 
